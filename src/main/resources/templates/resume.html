@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title th:text="${userDTO.user.name} + ' - Curriculum Vitae'">Joe
+	Bloggs - Curriculum Vitae</title>
+
+<meta name="viewport" content="width=device-width" />
+<meta name="description" content="The Curriculum Vitae of Joe Bloggs." />
+<meta charset="UTF-8">
+
+<link type="text/css" rel="stylesheet" href="../static/css/resume.css"
+	th:href="@{/css/resume.css}">
+<link
+	href='http://fonts.googleapis.com/css?family=Rokkitt:400,700|Lato:400,300'
+	rel='stylesheet' type='text/css'>
+
+<!--[if lt IE 9]>
+<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+</head>
+<body id="top">
+	<div id="cv" class="instaFade">
+		<div class="mainDetails">
+			<div id="headshot" class="quickFade">
+				<img src="../static/images/headshot.jpg"
+					th:src="${userDTO.user.avatarUrl} ?: @{/images/headshot.jpg}"
+					th:alt="${userDTO.user.name}" />
+			</div>
+
+			<div id="name">
+				<h1 th:text="${userDTO.user.name}" class="quickFade delayTwo">Joe
+					Bloggs</h1>
+				<h2 class="quickFade delayThree">Github Resident</h2>
+				<h4 class="quickFade delayThree" th:text="${'(Since ' + #dates.year(userDTO.user.createdAt) + ')'}"></h4>
+															
+			</div>
+
+			<div id="contactDetails" class="quickFade delayFour">
+				<ul>
+					<li th:if="${userDTO.user.email}">e: <a
+						th:href="${'mailto:' + userDTO.user.email}"
+						th:text="${userDTO.user.email}" target="_blank">joe@bloggs.com</a></li>
+					<li th:if="${userDTO.user.htmlUrl}">w: <a
+						th:href="${userDTO.user.htmlUrl}"
+						th:text="${userDTO.user.htmlUrl}" target="_blank">www.bloggs.com</a></li>
+				</ul>
+			</div>
+			<div class="clear"></div>
+		</div>
+
+		<div id="mainArea" class="quickFade delayFive">
+			<section>
+				<article>
+					<div class="sectionTitle">
+						<h1>Repositories by Language</h1>
+						<h4 th:text="${'total (' + userDTO.totalRepoCount + ')'}"></h4>
+					</div>
+					<div class="sectionContent">
+						<ul class="keySkills"
+							th:with="baseurl =${'https://github.com/search?q=user%3A'}">
+							<li th:each="bylang: ${userDTO.byLangRepos}"><a
+								th:href="${baseurl + userDTO.user.login + '&l=' + bylang.key}"
+								th:text="${bylang.key + ' (' + (bylang.value*100/userDTO.totalRepoCount) + ' %)'}"
+								target="_blank"> </a></li>
+						</ul>
+					</div>
+				</article>
+				<div class="clear"></div>
+			</section>
+
+			<section>
+				<div class="sectionTitle">
+					<h1>Top Hit Repos</h1>
+				</div>
+
+				<div class="sectionContent">
+					<article th:each="by: ${userDTO.byPopularityRepos}">
+						<h2>
+							<a
+								th:href="${'https://github.com/' + userDTO.user.login + '/' + by.name}"
+								th:text="${by.name}" target="_blank"></a>
+						</h2>
+						<p class="subDetails"
+							th:text="${#dates.year(by.createdAt) + ' - ' + #dates.year(by.updatedAt)}"></p>
+						<p class="subDetails" th:text="${by.description}"></p>
+						<p th:inline="text">
+							This repository has [[${by.stargazersCount}]] stars and
+							[[${by.forks}]] forks. If you would like more information about
+							this repository and my contributed code, please visit the <a
+								th:href="${'https://github.com/' + userDTO.user.login + '/' + by.name}"
+								th:text="'repo'" target="_blank"></a> on GitHub.
+						</p>
+					</article>
+				</div>
+				<div class="clear"></div>
+			</section>
+
+			<section>
+				<div class="sectionTitle">
+					<h1>Most Recently Updates Repos</h1>
+				</div>
+
+				<div class="sectionContent">
+					<article th:each="by: ${userDTO.byActivity}">
+						<h2>
+							<a
+								th:href="${'https://github.com/' + userDTO.user.login + '/' + by.name}"
+								th:text="${by.name}" target="_blank"></a>
+						</h2>
+						<p class="subDetails"
+							th:text="${#dates.year(by.createdAt) + ' - ' + #dates.year(by.updatedAt)}"></p>
+						<p class="subDetails" th:text="${by.description}"></p>
+						<p th:inline="text">
+							This repository has [[${by.stargazersCount}]] stars and
+							[[${by.forks}]] forks.
+							If you would like more information about
+							this repository and my contributed code, please visit the <a
+								th:href="${'https://github.com/' + userDTO.user.login + '/' + by.name}"
+								th:text="'repo'" target="_blank"></a> on GitHub.
+						</p>
+					</article>
+				</div>
+				<div class="clear"></div>
+			</section>
+
+			<section>
+				<div class="sectionTitle">
+					<h1>Organizations</h1>
+				</div>
+
+				<div class="sectionContent">
+					<article th:each="org: ${userDTO.organizations}">
+						<h2>
+							<a th:href="${org.htmlUrl}" th:text="${org.name}?: 'UNKNOWN'" target="_blank"></a>
+						</h2>
+						<p class="subDetails" th:text="${#dates.year(org.createdAt)}"></p>
+						<p class="subDetails" th:text="${org.location}"></p>
+						<p th:inline="text">
+							If you would like more information about this organization,
+							please visit the <a th:href="${org.htmlUrl}"
+								th:text="'organization'" target="_blank"></a> page on GitHub.
+						</p>
+					</article>
+				</div>
+				<div class="clear"></div>
+			</section>
+
+		</div>
+	</div>
+</body>
+</html>
