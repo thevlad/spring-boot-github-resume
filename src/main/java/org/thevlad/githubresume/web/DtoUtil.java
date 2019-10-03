@@ -47,7 +47,7 @@ public class DtoUtil {
 		int total = 0;
 		for (Iterator<Entry<String, GHRepository>> iterator = repos.entrySet().iterator(); iterator.hasNext();) {
 			GHRepository repo = iterator.next().getValue();
-			log.info("Repo: {}, Owner: {}", repo.getName(), repo.getOwnerName());
+//			log.info("Repo: {}, Owner: {}", repo.getName(), repo.getOwnerName());
 			String lang = repo.getLanguage();
 			if (lang == null)
 				continue;
